@@ -1,0 +1,29 @@
+flowchart TD
+    subgraph Aplicacao
+        MAIN[main.c]
+        SENS[sensoriamento.h]
+        TELH[telemetry.h]
+    end
+
+    subgraph Processo
+        ADC[adc_reader.c/h]
+        CSV[telemetry.c]
+    end
+
+    subgraph Drivers futuros
+        ADC_HW[Driver ADC CH32V003]
+        TIMER[Timer/SysTick]
+        SPI[Driver SPI]
+        SD[Driver microSD/FAT]
+    end
+
+    ADC_HW --> ADC
+    TIMER --> MAIN
+    MAIN --> ADC
+    ADC --> MAIN
+    SENS --> MAIN
+    MAIN --> CSV
+    CSV --> TELH
+    TELH --> MAIN
+    MAIN --> SPI
+    SPI --> SD

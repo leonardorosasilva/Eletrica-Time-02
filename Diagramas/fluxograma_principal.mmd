@@ -1,0 +1,28 @@
+flowchart TD
+    A[Iniciar sistema] --> B[Confirmar variante CH32V003]
+    B --> C[Inicializar AMS1117 3.3 V e clock]
+    C --> D[Inicializar GPIO, ADC e SPI]
+    D --> E0[Inicializar microSD]
+    E0 --> E{Hardware inicializou?}
+    E -->|Nao| ERRO[Registrar ou sinalizar erro]
+    ERRO --> D
+    E -->|Sim| F[Aguardar ciclo de 10 ms]
+    F --> G[Ler 4 sinais analogicos]
+    G --> H[Saida condicionada da tensao LiPo]
+    G --> I[Saida condicionada da corrente LiPo]
+    G --> J[Saida condicionada da tensao LiFe]
+    G --> K[Saida condicionada da corrente LiFe]
+    H --> L[Divisor resistivo: usar ganho e offset reais]
+    J --> L
+    I --> M[ACS758 ou sensor final: usar zero e sensibilidade reais]
+    K --> M
+    L --> N{Leitura dentro do faixa valida?}
+    M --> N
+    N -->|Nao| ERRO
+    N -->|Sim| O[Montar BatterySample]
+    O --> P{Completou 100 ms?}
+    P -->|Nao| F
+    P -->|Sim| Q[Formatar linha CSV]
+    Q --> R[Escrever linha no microSD]
+    R --> S[Atualizar proximo horario]
+    S --> F

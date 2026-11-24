@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant Timer
+    participant Main
+    participant ADC
+    participant Conversao
+    participant Telemetria
+    participant MicroSD
+
+    loop A cada 10 ms
+        Timer->>Main: Ciclo de 100 Hz
+        Main->>ADC: Ler PD2/PD3/PD4/PD6
+        ADC-->>Main: Contas brutas 0..1023
+        Main->>Conversao: Converter tensoes e correntes
+        Conversao-->>Main: BatterySample
+    end
+
+    loop A cada 100 ms
+        Main->>Telemetria: Criar registro
+        Telemetria-->>Main: Linha CSV
+        Main->>MicroSD: Escrever linha
+        MicroSD-->>Main: Confirmacao ou erro
+    end
